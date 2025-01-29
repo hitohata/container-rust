@@ -29,5 +29,20 @@ pub fn parse_args() -> Args {
 
     // Validate arguments
 
+    if args.debug {
+        setup_logging(log::LevelFilter::Debug);
+    } else {
+        setup_logging(log::LevelFilter::Info);
+    }
+
+    log::info!("{:?}", args);
+
     args
+}
+
+pub fn setup_logging(level: log::LevelFilter) {
+    env_logger::Builder::from_default_env()
+        .format_timestamp(Some(env_logger::TimestampPrecision::Seconds))
+        .filter_level(level)
+        .init();
 }

@@ -1,4 +1,4 @@
-use crate::errors::{ErrCode, Errcode};
+use crate::errors::ErrCode;
 
 use std::ffi::CString;
 use std::path::PathBuf;

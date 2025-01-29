@@ -1,7 +1,18 @@
 mod cli;
+mod errors;
+
+use errors::exit_with_retcode;
+use std::process::exit;
 
 fn main() {
-    let args = cli::parse_args();
-
-    println!("{:?}", args);
+    match cli::parse_args() {
+        Ok(arg) => {
+            log::info!("{:?}", arg);
+            exit_with_retcode(Ok(()))
+        }
+        Err(e) => {
+            log::error!("Error while parsing arguments:\n\t{}", e);
+            exit(e.get_retcode())
+        }
+    }
 }

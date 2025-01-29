@@ -1,6 +1,8 @@
 use std::path::PathBuf;
 use structopt::StructOpt;
 
+use crate::errors::ErrCode;
+
 #[derive(Debug, StructOpt)]
 #[structopt(name = "crabcan", about = "A simple container in Rust.")]
 pub struct Args {
@@ -21,13 +23,12 @@ pub struct Args {
     pub mount_dir: PathBuf,
 }
 
-pub fn parse_args() -> Args {
+pub fn parse_args() -> Result<Args, ErrCode> {
     let args = Args::from_args();
 
-    // If args.debug: Setup log at debug level
-    // Else: Setup log at info level
-
-    // Validate arguments
+    if !args.mount_dir.exists() || !args.mount_dir.is_dir() {
+        return Err(ErrCode::ArgumentInvalid("mount"));
+    }
 
     if args.debug {
         setup_logging(log::LevelFilter::Debug);
@@ -35,9 +36,7 @@ pub fn parse_args() -> Args {
         setup_logging(log::LevelFilter::Info);
     }
 
-    log::info!("{:?}", args);
-
-    args
+    Ok(args)
 }
 
 pub fn setup_logging(level: log::LevelFilter) {
